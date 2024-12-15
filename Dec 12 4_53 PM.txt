@@ -1,0 +1,49 @@
+let taskFormEl = document.getElementById('task-form');
+let taskInputEl = document.getElementById('task-input');
+let taskIListEl = document.getElementById('task-list-el');
+
+let taskList = localStorage.getItem('tasks') ? JSON.parse(localStorage.getItem('tasks')) : [];
+
+console.log(taskList);
+
+taskFormEl.addEventListener('submit', function (e) {
+    e.preventDefault();
+    let task = taskInputEl.value;
+    taskList.unshift(task);
+    localStorage.setItem('tasks', JSON.stringify(taskList));
+    displayTasks();
+    taskInputEl.value = '';
+})
+
+function displayTasks() {
+    if (taskList.length != 0) {
+        let eachTask = '';
+        taskList.forEach((task, i) => {
+            eachTask = eachTask + `<li class="list-group-item list-group-item-secondary mb-2">
+                        <span>${task}</span>
+                        <button class="float-end btnn" onclick="deleteFunction(${i})">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                        <button class="float-end btnn  me-2" onclick="updateFunction(${i})">
+                            <i class="bi bi-pen-fill"></i>
+                        </button>
+                    </li>`;
+        })
+        taskIListEl.innerHTML = eachTask;
+    }
+}
+displayTasks();
+
+
+function deleteFunction(id) {
+    taskList.splice(id, 1);
+    localStorage.setItem('tasks', JSON.stringify(taskList));
+    displayTasks();
+}
+
+function updateFunction(id) {
+    taskInputEl.value = taskList[id];
+    taskList.splice(id, 1);
+    localStorage.setItem('tasks', JSON.stringify(taskList));
+    displayTasks();
+}
